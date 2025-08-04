@@ -1,0 +1,117 @@
+-- CREATE TABLE customers (
+-- 	customer_id SERIAL PRIMARY KEY,
+-- 	name TEXT,
+-- 	location TEXT
+-- 	);
+
+-- CREATE TABLE products (
+-- 	product_id SERIAL PRIMARY KEY,
+-- 	product_name TEXT,
+-- 	category TEXT
+-- 	);
+	
+-- CREATE TABLE orders (
+-- 	order_id SERIAL PRIMARY KEY,
+-- 	customer_id INT REFERENCES customers(customer_id),
+-- 	order_date DATE,
+-- 	total_price NUMERIC
+-- 	);
+
+-- CREATE TABLE order_items (
+-- 	order_item_id SERIAL PRIMARY KEY,
+-- 	order_id INT REFERENCES orders(order_id),
+-- 	product_id INT REFERENCES products(product_id),
+-- 	quantity INT,
+-- 	price NUMERIC
+-- 	);
+	
+-- INSERT INTO customers (name, location) VALUES
+-- ('Alice Smith', 'London'),
+-- ('Bob Johnson', 'Manchester'),
+-- ('Charlie Lee', 'Birmingham'),
+-- ('Diana Grant', 'Leeds');
+
+-- INSERT INTO products(product_name, category) VALUES
+-- ('Wireless Mouse', 'Electronics'),
+-- ('Bluetooth Speaker', 'Electronics'),
+-- ('Running Shoes', 'Footwear'),
+-- ('T-Shirt', 'Apparel'),
+-- ('Water Bottle', 'Accessories');
+
+-- INSERT INTO orders(customer_id, order_date, total_price) VALUES
+-- (1, '2025-07-01', 59.98),
+-- (2, '2025-07-02', 99.99),
+-- (1, '2025-07-10', 34.99),
+-- (3, '2025-07-12', 49.99),
+-- (4, '2025-07-15', 79.98);
+
+-- INSERT INTO order_items(order_id, product_id, quantity, price) VALUES
+-- (1, 1, 1, 29.99),
+-- (1, 5, 1, 29.99),
+-- (2, 2, 1, 99.99),
+-- (3, 4, 1, 34.99),
+-- (4, 3, 1, 49.99),
+-- (5, 3, 1, 39.99),
+-- (5, 5, 2, 19.99);
+
+-- SELECT o.order_id, c.name AS customer, p.product_name, oi.quantity, oi.price
+-- FROM  order_items oi
+-- JOIN orders o ON oi.order_id = o.order_id
+-- JOIN customers c ON o.customer_id = c.customer_id
+-- JOIN products p ON oi.product_id = p.product_id
+-- ORDER BY o.order_id;
+
+-- SELECT 
+-- 	c.name AS customer,
+-- 	ROUND(SUM(o.total_price), 2) AS lifetime_value
+-- FROM orders o
+-- JOIN customers c ON o.customer_id = c.customer_id
+-- GROUP BY c.name
+-- ORDER BY lifetime_value DESC;
+
+-- SELECT 
+-- 	p.product_name,
+-- 	SUM(oi.quantity) AS total_quantity
+-- FROM order_items oi
+-- JOIN products p ON oi.product_id = p.product_id
+-- GROUP BY p.product_name
+-- ORDER BY total_quantity DESC;
+
+-- SELECT 
+-- 	p.category,
+-- 	ROUND(SUM(oi.quantity * oi.price), 2) AS total_revenue
+-- FROM order_items oi
+-- JOIN products p ON oi.product_id = p.product_id
+-- GROUP BY p.category
+-- ORDER BY total_revenue DESC;
+
+-- SELECT 
+-- 	c.name,
+-- 	COUNT(o.order_id) AS order_count,
+-- 	CASE
+-- 		WHEN COUNT(o.order_id) >= 3 THEN 'High'
+-- 		WHEN COUNT(o.order_id) = 2 THEN 'Medium'
+-- 		ELSE 'Low'
+-- 	END AS segment
+-- FROM customers c
+-- JOIN orders o ON c.customer_id = o.customer_id
+-- GROUP BY c.name
+-- ORDER BY order_count DESC;
+
+-- SELECT 
+-- 	DATE_TRUNC('month', order_date) AS month,
+-- 	COUNT(order_id) AS total_orders,
+-- 	ROUND(SUM(total_price), 2) AS revenue
+-- FROM orders
+-- GROUP BY month
+-- ORDER BY month;
+
+-- CREATE VIEW customer_ltv AS
+-- SELECT
+-- 	c.name AS customer,
+-- 	SUM(o.total_price) AS lifetime_val
+-- FROM customers c
+-- JOIN orders o ON o.customer_id = c.customer_id
+-- GROUP BY c.name;
+
+SELECT * FROM customer_ltv ORDER BY lifetime_val DESC;
