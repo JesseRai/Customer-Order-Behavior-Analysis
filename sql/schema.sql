@@ -1,4 +1,4 @@
-REATE TABLE customers (
+CREATE TABLE customers (
  	customer_id SERIAL PRIMARY KEY,
  	name TEXT,
  	location TEXT
